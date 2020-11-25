@@ -133,3 +133,31 @@ userGetReputation([_,_,_,Reputacion], Reputacion).
 ██████╔╝██║  ██║███████║███████╗    ██████╔╝███████╗    ██║  ██║███████╗╚██████╗██║  ██║╚██████╔╝███████║
 ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝    ╚═════╝ ╚══════╝    ╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝
 */
+
+%Usuarios: israel, pedro, maria, juan
+
+%Al menos 2 stack's, 4 usuarios registrados, 5 preguntas y 10 respuestas
+                 %Preguntas
+stack1([[["Hola ¿como puedo hacer hola mundo en python?", 1, "israel", [22, 11, 2020], ["python"], "abierta", 0, 0],
+        ["En C ¿como puedo asignar memoria a un arreglo?", 2, "pedro", [23, 11, 2020], ["C", "memoria"], "abierta", 0, 0],
+        ["Hola soy nuevo, como se encuentran hoy ?", 3, "juan", [23, 11, 2020], ["comunidad"], "abierta", 0, 0],
+        ["Hola como puedo instalar una libreria en python?", 4, "maria", [24, 11, 2020], ["python", "libreria"], "abierta", 0, 0],
+        ["¿Prefieren el helado de chocolate o de frutilla?", 5, "juan", [24, 11, 2020], ["postre", "helado"], "abierta", 0, 0]],
+                %Respuestas
+        [["Hola, puedes usar malloc para asignarle memoria", 2, 1, "israel", [23, 11, 2020], ["duda", "C"], "pendiente", 0],
+        ["Intenta usar print(Hola mundo)", 1, 2, "pedro", [23, 11, 2020], ["python", "hola mundo"], "pendiente", 0],
+        ["Tambien puedes asignar la cantidad de elementos del arreglo, como int *arreglo[100]", 2, 3, "maria", [23, 11, 2020], ["C", "duda"], "pendiente", 0],
+        ["Me gusta mas el de frutilla", 5, 4, "maria", [24, 11, 2020], ["comunidad"], "pendiente", 0],
+        ["en la cmd usa el comando pip install *nombreLibreria*", 4, 5, "israel", [24, 11, 2020], ["python", "pip"], "pendiente", 0],
+        ["prefiero el chocolate", 5, 6, "israel", [24, 11, 2020], ["chocolate", "helado"], "pendiente", 0],
+        ["Ahora mismo realizando el laboratorio del paradigma logico en prolog, ¿y tu?", 3, 7, "israel", [24, 11, 2020], ["comunidad","prolog"], "pendiente", 0],
+        ["me encuentro bien, todo correcto", 3, 8, "maria", [25, 11, 2020], ["comunidad"], "pendiente", 0],
+        ["prefiero el de menta, pero entre esos el de frutilla", 5, 9, "pedro", [25, 11, 2020], ["helados"], "pendiente", 0],
+        ["podrias usar print, muestra cosas por pantalla", 1, 10, "juan", [25, 11, 2020], ["python", "duda"], "pendiente", 0]],
+            %Usuarios
+        [["israel", "qwerty", [1], 200], ["pedro", "123", [2], 200], ["juan", "asd", [3, 5], 200], ["maria", "hola123", [4], 200]],
+            %Usuario Activo
+        []]).
+
+stack2([]).
+
