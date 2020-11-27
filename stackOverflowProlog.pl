@@ -14,6 +14,11 @@
 
 %Constructor
 
+crearStackVacio([[], [], [], []]).
+
+crearStack(TDApreguntas,TDArespuestas,TDAusuarios,UsuarioActivo,StackSalida):-
+    StackSalida = [TDApreguntas,TDArespuestas,TDAusuarios,UsuarioActivo].
+
 %Selectores
 stackGetQuestions([Preguntas,_,_,_], Preguntas).
 
@@ -121,7 +126,7 @@ userGetUsername([Username,_,_,_], Username).
 
 userGetPassword([Username,_,_,_], Username).
 
-userGetQuestions([_,_,Questions,_], Question).
+userGetQuestions([_,_,Questions,_], Questions).
 
 userGetReputation([_,_,_,Reputacion], Reputacion).
 
@@ -160,4 +165,41 @@ stack1([[["Hola ¿como puedo hacer hola mundo en python?", 1, "israel", [22, 11,
         []]).
 
 stack2([]).
+
+%predicado que permite encontrar si hay un elemento en una sublista del stack
+buscarElemento([[E|_]|_],E).
+buscarElemento([[_|Cola1]|Cola2],E) :-
+    buscarElemento([Cola1|Cola2],E).
+buscarElemento([[]|Cola2],E) :-
+    buscarElemento(Cola2,E).
+
+/*
+███████╗██╗   ██╗███╗   ██╗ ██████╗██╗ ██████╗ ███╗   ██╗███████╗███████╗    
+██╔════╝██║   ██║████╗  ██║██╔════╝██║██╔═══██╗████╗  ██║██╔════╝██╔════╝    
+█████╗  ██║   ██║██╔██╗ ██║██║     ██║██║   ██║██╔██╗ ██║█████╗  ███████╗    
+██╔══╝  ██║   ██║██║╚██╗██║██║     ██║██║   ██║██║╚██╗██║██╔══╝  ╚════██║    
+██║     ╚██████╔╝██║ ╚████║╚██████╗██║╚██████╔╝██║ ╚████║███████╗███████║    
+╚═╝      ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝╚══════╝    
+                                                                             
+██████╗ ███████╗ ██████╗ ██╗   ██╗███████╗██████╗ ██╗██████╗  █████╗ ███████╗
+██╔══██╗██╔════╝██╔═══██╗██║   ██║██╔════╝██╔══██╗██║██╔══██╗██╔══██╗██╔════╝
+██████╔╝█████╗  ██║   ██║██║   ██║█████╗  ██████╔╝██║██║  ██║███████║███████╗
+██╔══██╗██╔══╝  ██║▄▄ ██║██║   ██║██╔══╝  ██╔══██╗██║██║  ██║██╔══██║╚════██║
+██║  ██║███████╗╚██████╔╝╚██████╔╝███████╗██║  ██║██║██████╔╝██║  ██║███████║
+╚═╝  ╚═╝╚══════╝ ╚══▀▀═╝  ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝╚═════╝ ╚═╝  ╚═╝╚══════╝
+*/                                                                             
+
+stackRegister(Stack,Username,Password,Stack2):-
+    string(Username),
+    string(Password),
+    stackGetQuestions(Stack, Preguntas),
+    stackGetAnswers(Stack, Respuestas),
+    stackGetUsers(Stack, Usuarios),
+    not(buscarElemento(Usuarios,Username)),!,
+    crearUsuario(Username,Password,[],200,SalidaUsuario),
+    append(Usuarios, [SalidaUsuario], ListaResultante),
+    stackGetActiveUser(Stack, ActiveUser),
+    crearStack(Preguntas,Respuestas,ListaResultante,ActiveUser,Stack2).
+
+
 
