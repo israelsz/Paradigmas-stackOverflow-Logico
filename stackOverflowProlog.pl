@@ -43,26 +43,24 @@ stackGetActiveUser([_,_,_,ActiveUser], ActiveUser).
 % [pregunta, idPregunta, autor, [fecha], [etiquetas], estadoPregunta, recompensaOfrecida, votosTotales]
 
 % Constructor
-crearPregunta(Pregunta,Id,Autor,Fecha,Etiquetas,EstadoPregunta,Recompensa,VotosTotales,SalidaPregunta):-
-    SalidaPregunta = [Pregunta, Id, Autor, Fecha, Etiquetas, EstadoPregunta, Recompensa, VotosTotales].
+crearPregunta(Pregunta,Id,Autor,Fecha,Etiquetas,EstadoPregunta, VotosTotales,SalidaPregunta):-
+    SalidaPregunta = [Pregunta, Id, Autor, Fecha, Etiquetas, EstadoPregunta, VotosTotales].
 
 % Selectores
 
-questionGetPregunta([Question,_,_,_,_,_,_,_], Question).
+questionGetPregunta([Question,_,_,_,_,_,_], Question).
 
-questionGetId([_,Id,_,_,_,_,_,_], Id).
+questionGetId([_,Id,_,_,_,_,_], Id).
 
-questionGetUser([_,_,User,_,_,_,_,_], User).
+questionGetUser([_,_,User,_,_,_,_], User).
 
-questionGetDate([_,_,_,Date,_,_,_,_], Date).
+questionGetDate([_,_,_,Date,_,_,_], Date).
 
-questionGetLabels([_,_,_,_,Labels,_,_,_], Labels).
+questionGetLabels([_,_,_,_,Labels,_,_], Labels).
 
-questionGetStatus([_,_,_,_,_,Status,_,_], Status).
+questionGetStatus([_,_,_,_,_,Status,_], Status).
 
-questionGetRecompensa([_,_,_,_,_,_,Reward,_], Reward).
-
-questionGetVotes([_,_,_,_,_,_,_,Votes], Votes).
+questionGetVotes([_,_,_,_,_,_,Votes], Votes).
 
 /*
 ████████╗██████╗  █████╗     ██████╗ ███████╗███████╗██████╗ ██╗   ██╗███████╗███████╗████████╗ █████╗ 
@@ -124,7 +122,7 @@ crearUsuario(Username,Password,Preguntas,Reputacion,SalidaUsuario):-
 
 userGetUsername([Username,_,_,_], Username).
 
-userGetPassword([Username,_,_,_], Username).
+userGetPassword([_,Password,_,_], Password).
 
 userGetQuestions([_,_,Questions,_], Questions).
 
@@ -166,12 +164,42 @@ stack1([[["Hola ¿como puedo hacer hola mundo en python?", 1, "israel", [22, 11,
 
 stack2([]).
 
+/*
+██████╗ ██████╗ ███████╗██████╗ ██╗ ██████╗ █████╗ ██████╗  ██████╗ ███████╗                                                  
+██╔══██╗██╔══██╗██╔════╝██╔══██╗██║██╔════╝██╔══██╗██╔══██╗██╔═══██╗██╔════╝                                                  
+██████╔╝██████╔╝█████╗  ██║  ██║██║██║     ███████║██║  ██║██║   ██║███████╗                                                  
+██╔═══╝ ██╔══██╗██╔══╝  ██║  ██║██║██║     ██╔══██║██║  ██║██║   ██║╚════██║                                                  
+██║     ██║  ██║███████╗██████╔╝██║╚██████╗██║  ██║██████╔╝╚██████╔╝███████║                                                  
+╚═╝     ╚═╝  ╚═╝╚══════╝╚═════╝ ╚═╝ ╚═════╝╚═╝  ╚═╝╚═════╝  ╚═════╝ ╚══════╝                                                  
+                                                                                                                              
+ ██████╗ ██████╗ ███╗   ███╗██████╗ ██╗     ███████╗███╗   ███╗███████╗███╗   ██╗████████╗ █████╗ ██████╗ ██╗ ██████╗ ███████╗
+██╔════╝██╔═══██╗████╗ ████║██╔══██╗██║     ██╔════╝████╗ ████║██╔════╝████╗  ██║╚══██╔══╝██╔══██╗██╔══██╗██║██╔═══██╗██╔════╝
+██║     ██║   ██║██╔████╔██║██████╔╝██║     █████╗  ██╔████╔██║█████╗  ██╔██╗ ██║   ██║   ███████║██████╔╝██║██║   ██║███████╗
+██║     ██║   ██║██║╚██╔╝██║██╔═══╝ ██║     ██╔══╝  ██║╚██╔╝██║██╔══╝  ██║╚██╗██║   ██║   ██╔══██║██╔══██╗██║██║   ██║╚════██║
+╚██████╗╚██████╔╝██║ ╚═╝ ██║██║     ███████╗███████╗██║ ╚═╝ ██║███████╗██║ ╚████║   ██║   ██║  ██║██║  ██║██║╚██████╔╝███████║
+ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚══════╝╚══════╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝ ╚═════╝ ╚══════╝
+*/                                                                                                                        
+
 %predicado que permite encontrar si hay un elemento en una sublista del stack
 buscarElemento([[E|_]|_],E).
 buscarElemento([[_|Cola1]|Cola2],E) :-
     buscarElemento([Cola1|Cola2],E).
 buscarElemento([[]|Cola2],E) :-
     buscarElemento(Cola2,E).
+
+%Predicado que verifica si el usuario se encuentra registrado o no.
+existeUser([Cabeza|_],User):-
+    userGetUsername(Cabeza,Username),
+    (User = Username).
+existeUser([_|Cola], User) :- existeUser(Cola, User).
+
+%Predicado que verifica si el usuario y su contraseña coinciden.
+existeUserPassword([Cabeza|_],User,Pass):-
+    userGetUsername(Cabeza,Username),
+    userGetPassword(Cabeza,Password),
+    (User = Username),
+    (Pass = Password).
+existeUserPassword([_|Cola], User, Pass) :- existeUserPassword(Cola, User, Pass).
 
 /*
 ███████╗██╗   ██╗███╗   ██╗ ██████╗██╗ ██████╗ ███╗   ██╗███████╗███████╗    
@@ -195,11 +223,20 @@ stackRegister(Stack,Username,Password,Stack2):-
     stackGetQuestions(Stack, Preguntas),
     stackGetAnswers(Stack, Respuestas),
     stackGetUsers(Stack, Usuarios),
-    not(buscarElemento(Usuarios,Username)),!,
+    not(existeUser(Usuarios,Username)),!,
     crearUsuario(Username,Password,[],200,SalidaUsuario),
     append(Usuarios, [SalidaUsuario], ListaResultante),
     stackGetActiveUser(Stack, ActiveUser),
     crearStack(Preguntas,Respuestas,ListaResultante,ActiveUser,Stack2).
 
 
-
+stackLogin(Stack,Username,Password,Stack2):-
+    string(Username),
+    string(Password),
+    stackGetQuestions(Stack, Preguntas),
+    stackGetAnswers(Stack, Respuestas),
+    stackGetUsers(Stack, Usuarios),
+    stackGetActiveUser(Stack, ActiveUser),
+    existeUserPassword(Usuarios,Username,Password),!,
+    append(ActiveUser,Username,ListaResultante),
+    crearStack(Preguntas,Respuestas,Usuarios,ListaResultante,Stack2).
