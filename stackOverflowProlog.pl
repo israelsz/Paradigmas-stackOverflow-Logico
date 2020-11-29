@@ -62,6 +62,18 @@ questionGetStatus([_,_,_,_,_,Status,_], Status).
 
 questionGetVotes([_,_,_,_,_,_,Votes], Votes).
 
+%Modificadores
+
+%Cierra una pregunta, cambiando su Status a cerrada.
+closeQuestion(TDApregunta,PreguntaModificada):-
+    questionGetPregunta(TDApregunta,Pregunta),
+    questionGetId(TDApregunta,Id),
+    questionGetUser(TDApregunta,User),
+    questionGetDate(TDApregunta,Date),
+    questionGetLabels(TDApregunta,Labels),
+    questionGetVotes(TDApregunta,Votes),
+    PreguntaModificada= [Pregunta,Id,User,Date,Labels,"cerrada",Votes].
+
 /*
 ████████╗██████╗  █████╗     ██████╗ ███████╗███████╗██████╗ ██╗   ██╗███████╗███████╗████████╗ █████╗ 
 ╚══██╔══╝██╔══██╗██╔══██╗    ██╔══██╗██╔════╝██╔════╝██╔══██╗██║   ██║██╔════╝██╔════╝╚══██╔══╝██╔══██╗
@@ -99,6 +111,18 @@ answerGetStatus([_,_,_,_,_,_,EstadoRespuesta,_], EstadoRespuesta).
 
 answerGetVotes([_,_,_,_,_,_,_,VotosTotales], VotosTotales).
 
+%Modificadores
+%Cambia el estado de una respuesta a aceptada
+aceptarRespuesta(TDArespuesta,RespuestaModificada):-
+    answerGetRespuesta(TDArespuesta,Respuesta),
+    answerGetIdPregunta(TDArespuesta,IdPregunta),
+    answerGetId(TDArespuesta,IdRespuesta),
+    answerGetUser(TDArespuesta,Username),
+    answerGetDate(TDArespuesta,Date),
+    answerGetLabels(TDArespuesta,Labels),
+    answerGetVotes(TDArespuesta,Votes),
+    RespuestaModificada = [Respuesta,IdPregunta,IdRespuesta,Username,Date,Labels,"aceptada",Votes].
+
 
 /*
 ████████╗██████╗  █████╗     ██╗   ██╗███████╗██╗   ██╗ █████╗ ██████╗ ██╗ ██████╗ ███████╗
@@ -131,13 +155,31 @@ userGetReputation([_,_,_,Reputacion], Reputacion).
 % Modificadores
 
 %Agrega una pregunta al usuario
-userAddQuestion(TDAusuario,IdPregunta,Lista):-
+userAddQuestion(TDAusuario,IdPregunta,ListaModificada):-
     userGetUsername(TDAusuario,Username),
     userGetPassword(TDAusuario,Password),
     userGetReputation(TDAusuario,Reputacion),
     userGetQuestions(TDAusuario,PreguntasUsuario),
     append(PreguntasUsuario,[IdPregunta],NuevaListaPreguntas),
-    Lista = [Username,Password,NuevaListaPreguntas,Reputacion].
+    ListaModificada = [Username,Password,NuevaListaPreguntas,Reputacion].
+
+%Añade 2 de reputacion al usuario
+userAdd2reputation(TDAusuario,ListaModificada):-
+    userGetUsername(TDAusuario,Username),
+    userGetPassword(TDAusuario,Password),
+    userGetReputation(TDAusuario,Reputacion),
+    userGetQuestions(TDAusuario,PreguntasUsuario),
+    NuevaReputacion is Reputacion+2,
+    ListaModificada = [Username,Password,PreguntasUsuario,NuevaReputacion].
+
+%Añade 15 de reputacion al usuario
+userAdd15reputation(TDAusuario,ListaModificada):-
+    userGetUsername(TDAusuario,Username),
+    userGetPassword(TDAusuario,Password),
+    userGetReputation(TDAusuario,Reputacion),
+    userGetQuestions(TDAusuario,PreguntasUsuario),
+    NuevaReputacion is Reputacion+15,
+    ListaModificada = [Username,Password,PreguntasUsuario,NuevaReputacion].
 
 /*
 ██████╗  █████╗ ███████╗███████╗    ██████╗ ███████╗    ██╗  ██╗███████╗ ██████╗██╗  ██╗ ██████╗ ███████╗
@@ -152,11 +194,11 @@ userAddQuestion(TDAusuario,IdPregunta,Lista):-
 
 %Al menos 2 stack's, 4 usuarios registrados, 5 preguntas y 10 respuestas
                  %Preguntas
-stack1([[["Hola ¿como puedo hacer hola mundo en python?", 1, "israel", "22/11/2020", ["python"], "abierta", 0, 0],
-        ["En C ¿como puedo asignar memoria a un arreglo?", 2, "pedro", "23/11/2020", ["C", "memoria"], "abierta", 0, 0],
-        ["Hola soy nuevo, como se encuentran hoy ?", 3, "juan", "23/11/2020", ["comunidad"], "abierta", 0, 0],
-        ["Hola como puedo instalar una libreria en python?", 4, "maria", "24/11/2020", ["python", "libreria"], "abierta", 0, 0],
-        ["¿Prefieren el helado de chocolate o de frutilla?", 5, "juan", "24/11/2020", ["postre", "helado"], "abierta", 0, 0]],
+stack1([[["Hola ¿como puedo hacer hola mundo en python?", 1, "israel", "22/11/2020", ["python"], "abierta", 0],
+        ["En C ¿como puedo asignar memoria a un arreglo?", 2, "pedro", "23/11/2020", ["C", "memoria"], "abierta", 0],
+        ["Hola soy nuevo, como se encuentran hoy ?", 3, "juan", "23/11/2020", ["comunidad"], "abierta", 0],
+        ["Hola como puedo instalar una libreria en python?", 4, "maria", "24/11/2020", ["python", "libreria"], "abierta", 0],
+        ["¿Prefieren el helado de chocolate o de frutilla?", 5, "juan", "24/11/2020", ["postre", "helado"], "abierta", 0]],
                 %Respuestas
         [["Hola, puedes usar malloc para asignarle memoria", 2, 1, "israel", "23/11/2020", ["duda", "C"], "pendiente", 0],
         ["Intenta usar print(Hola mundo)", 1, 2, "pedro", "23/11/2020", ["python", "hola mundo"], "pendiente", 0],
@@ -236,6 +278,56 @@ reemplazar(ElementoBuscado, [ElementoBuscado|Cola], ReemplazarPor, [ReemplazarPo
 reemplazar(ElementoBuscado, [CElemento|Cola], ReemplazarPor, [CElemento|ColaR]):-
   reemplazar(ElementoBuscado, Cola, ReemplazarPor, ColaR).
 
+%Busca la existencia de un id en la lista de preguntas
+existePregunta([Cabeza|_],IdBuscado):-
+    questionGetId(Cabeza,IdPregunta),
+    (IdBuscado = IdPregunta).
+existePregunta([_|Cola], IdBuscado) :- existePregunta(Cola, IdBuscado).
+
+%Busca la existencia de un id en la lista de respuestas
+existeRespuesta([Cabeza|_],IdBuscado):-
+    answerGetId(Cabeza,IdRespuesta),
+    (IdBuscado = IdRespuesta).
+existeRespuesta([_|Cola], IdBuscado) :- existeRespuesta(Cola, IdBuscado).
+
+%Busca la lista de una pregunta por su id
+buscarPreguntaPorId([Cabeza|_],IdBuscado,ListaPregunta):-
+    questionGetId(Cabeza,IdPregunta),
+    (IdBuscado = IdPregunta),
+    (Cabeza = ListaPregunta).
+buscarPreguntaPorId([_|Cola],IdBuscado,ListaPregunta) :- buscarPreguntaPorId(Cola,IdBuscado,ListaPregunta).
+
+%busca el nombre del usuario que hizo la pregunta por id
+buscarUsuariodePreguntaPorId([Cabeza|_],IdBuscado,Username):-
+    questionGetId(Cabeza,IdPregunta),
+    questionGetUser(Cabeza,Usuario),
+    (IdBuscado = IdPregunta),
+    (Usuario = Username).
+buscarUsuariodePreguntaPorId([_|Cola],IdBuscado,Username) :- buscarUsuariodePreguntaPorId(Cola,IdBuscado,Username).
+/*
+buscarListaUsuario([Cabeza|_],User,Lista):-
+    userGetUsername(Cabeza,Username),
+    (User = Username),
+    (Cabeza = Lista).
+buscarListaUsuario([_|Cola], User,Preguntas) :- buscarListaUsuario(Cola,User,Preguntas).
+*/
+
+buscarListaRespuestaPorIds([Cabeza|_],IdPreguntaBuscada,IdRespuestaBuscada,ListaRespuesta):-
+    answerGetIdPregunta(Cabeza,IdPregunta),
+    answerGetId(Cabeza,IdRespuesta),
+    (IdPreguntaBuscada = IdPregunta),
+    (IdRespuestaBuscada = IdRespuesta),
+    (Cabeza = ListaRespuesta).
+buscarListaRespuestaPorIds([_|Cola],IdPreguntaBuscada,IdRespuestaBuscada,ListaRespuesta) :- buscarListaRespuestaPorIds(Cola,IdPreguntaBuscada,IdRespuestaBuscada,ListaRespuesta).
+
+buscarUsuariodeRespuestaPorId([Cabeza|_],IdBuscado,Username):-
+    answerGetUser(Cabeza,Usuario),
+    answerGetId(Cabeza,IdRespuesta),
+    (IdBuscado = IdRespuesta),
+    (Usuario = Username).
+buscarUsuariodeRespuestaPorId([_|Cola],IdBuscado,Username) :- buscarUsuariodeRespuestaPorId(Cola,IdBuscado,Username).
+
+
 /*
 ███████╗██╗   ██╗███╗   ██╗ ██████╗██╗ ██████╗ ███╗   ██╗███████╗███████╗    
 ██╔════╝██║   ██║████╗  ██║██╔════╝██║██╔═══██╗████╗  ██║██╔════╝██╔════╝    
@@ -264,19 +356,6 @@ stackRegister(Stack,Username,Password,Stack2):-
     stackGetActiveUser(Stack, ActiveUser),
     crearStack(Preguntas,Respuestas,ListaResultante,ActiveUser,Stack2).
 
-stackRegister2(Stack,Username,Password,Stack2):-
-    string(Username),
-    string(Password),
-    stack1(Stack),
-    stackGetQuestions(Stack, Preguntas),
-    stackGetAnswers(Stack, Respuestas),
-    stackGetUsers(Stack, Usuarios),
-    not(buscarElemento(Usuarios,Username)),!,
-    crearUsuario(Username,Password,[],200,SalidaUsuario),
-    append(Usuarios, [SalidaUsuario], ListaResultante),
-    stackGetActiveUser(Stack, ActiveUser),
-    crearStack(Preguntas,Respuestas,ListaResultante,ActiveUser,Stack2).
-
 stackLogin(Stack,Username,Password,Stack2):-
     string(Username),
     string(Password),
@@ -288,10 +367,10 @@ stackLogin(Stack,Username,Password,Stack2):-
     append(ActiveUser,[Username],ListaResultante),
     crearStack(Preguntas,Respuestas,Usuarios,ListaResultante,Stack2).
 
-ask(Stack,Fecha,TextoPregunta,Etiquetas,Stack2):-
+ask(Stack,Fecha,TextoPregunta,ListaEtiquetas,Stack2):-
     string(Fecha),
     string(TextoPregunta),
-    is_list(Etiquetas),
+    is_list(ListaEtiquetas),
     %Se consiguen las sub listas del Stack
     stackGetQuestions(Stack,Preguntas),
     stackGetAnswers(Stack,Respuestas),
@@ -299,13 +378,13 @@ ask(Stack,Fecha,TextoPregunta,Etiquetas,Stack2):-
     stackGetActiveUser(Stack, ActiveUser),
     %Se verifica si hay un usuario conectado
     length(ActiveUser,CantidadUsuariosConectados),
-    not(CantidadUsuariosConectados = 0),
+    not(CantidadUsuariosConectados = 0),!,
     %Se crea el id de pregunta
     length(Preguntas,CantidadPreguntas),
     Id is CantidadPreguntas+1,
     %Se consigue al autor de la pregunta, que es el usuario Conectado
     nombreUsuarioActivo(ActiveUser,Autor),
-    crearPregunta(TextoPregunta,Id,Autor,Fecha,Etiquetas,"abierta",0,SalidaPregunta),
+    crearPregunta(TextoPregunta,Id,Autor,Fecha,ListaEtiquetas,"abierta",0,SalidaPregunta),
     %Se agrega la pregunta a las preguntas ya disponibles del stack
     append(Preguntas,[SalidaPregunta],ListaPreguntasResultante),
     %Se agrega el id de la pregunta al usuario que la hizo
@@ -314,3 +393,74 @@ ask(Stack,Fecha,TextoPregunta,Etiquetas,Stack2):-
     reemplazar(ListaUsuario,Usuarios,ListaIdInsertado,ListaUsuariosResultante),
     %Finalmente se crea el stack
     crearStack(ListaPreguntasResultante,Respuestas,ListaUsuariosResultante,[],Stack2).
+
+
+answer(Stack,Fecha,IdPreguntaQueResponde,TextoRespuesta,ListaEtiquetas,Stack2):-
+    string(Fecha),
+    string(TextoRespuesta),
+    is_list(ListaEtiquetas),
+    %Se consiguen las sub listas del Stack
+    stackGetQuestions(Stack,Preguntas),
+    stackGetAnswers(Stack,Respuestas),
+    stackGetUsers(Stack,Usuarios),
+    stackGetActiveUser(Stack, ActiveUser),
+    %Se verifica si hay un usuario conectado
+    length(ActiveUser,CantidadUsuariosConectados),
+    not(CantidadUsuariosConectados = 0),!,
+    %Se verifica si existe la pregunta a la que se responde
+    existePregunta(Preguntas,IdPreguntaQueResponde),!,
+    %Se crea el id de respuesta
+    length(Respuestas, CantidadRespuestas),
+    IdRespuesta is CantidadRespuestas+1,
+    %Se consigue al autor de la respuesta, que es el usuario conectado
+    nombreUsuarioActivo(ActiveUser,Autor),
+    crearRespuesta(TextoRespuesta,IdPreguntaQueResponde,IdRespuesta,Autor,Fecha,ListaEtiquetas,"pendiente",0,SalidaRespuesta),
+    append(Respuestas,[SalidaRespuesta],ListaRespuestasResultante),
+    crearStack(Preguntas,ListaRespuestasResultante,Usuarios,[],Stack2).
+    
+accept(Stack,IdPregunta,IdRespuesta,Stack2):-
+    integer(IdPregunta),
+    integer(IdRespuesta),
+    %Se consiguen las sub listas del Stack
+    stackGetQuestions(Stack,Preguntas),
+    stackGetAnswers(Stack,Respuestas),
+    stackGetUsers(Stack,Usuarios),
+    stackGetActiveUser(Stack, ActiveUser),
+    %Se verifica si hay un usuario conectado
+    length(ActiveUser,CantidadUsuariosConectados),
+    not(CantidadUsuariosConectados = 0),!,
+    %Se verifica si existe la pregunta que se quiere aceptar
+    existePregunta(Preguntas,IdPregunta),!,
+    existeRespuesta(Respuestas,IdRespuesta),!,
+    %Se consigue al autor de la respuesta, que es el usuario conectado
+    nombreUsuarioActivo(ActiveUser,Autor),
+    %Se verifica que la pregunta que sera aceptada sea una pregunta del usuario conectado
+    buscarUsuariodePreguntaPorId(Preguntas,IdPregunta,UsuarioQueHizoLaPregunta),
+    (Autor = UsuarioQueHizoLaPregunta),
+    %Se consigue la lista de la pregunta
+    buscarPreguntaPorId(Preguntas,IdPregunta,ListaPregunta),
+    %Se cierra la pregunta
+    closeQuestion(ListaPregunta,PreguntaCerrada),
+    print(PreguntaCerrada),
+    %Se actualiza el stack de preguntas con la pregunta cerrada
+    reemplazar(ListaPregunta,Preguntas,PreguntaCerrada,ListaPreguntasResultante),
+    print(ListaPreguntasResultante),
+    %Se conseguira la lista de respuesta que fue aceptada
+    buscarListaRespuestaPorIds(Respuestas,IdPregunta,IdRespuesta,ListaRespuestaEncontrada),
+    %Se marcara como aceptada la respuesta
+    aceptarRespuesta(ListaRespuestaEncontrada,RespuestaModificada),
+    %Se actualiza el stack de respuestas con la respuesta cerrada
+    reemplazar(ListaRespuestaEncontrada,Respuestas,RespuestaModificada,ListaRespuestaResultante),
+    %Se debe dar 2 de reputacion al usuario que acepto la respuesta
+    buscarListaUsuario(Usuarios,UsuarioQueHizoLaPregunta,ListaUsuario),
+    userAdd2reputation(ListaUsuario,UsuarioQuePreguntaConReputacionActualizada),
+    %Se actualiza el stack de usuarios con el usuario con reputacion aumentada
+    reemplazar(ListaUsuario,Usuarios,UsuarioQuePreguntaConReputacionActualizada,ListaUsuariosActualizada),
+    %se debe dar 15 de reputacion al usuario cuya respuesta fue aceptada, primero se busca el nombre del usuario que recibira la recompensa
+    buscarUsuariodeRespuestaPorId(ListaRespuestaResultante,IdRespuesta,NombreUsuario),
+    buscarListaUsuario(ListaUsuariosActualizada,NombreUsuario,ListaUsuario2),
+    userAdd15reputation(ListaUsuario2,UserCon15ReputacionAgregada),
+    %Se actualiza el stack de usaurios con el usuario con reputacion aumentada
+    reemplazar(ListaUsuario2,ListaUsuariosActualizada,UserCon15ReputacionAgregada,TDAUsuariosActualizados),
+    %Finalmente se crea el stack actualizado
+    crearStack(ListaPreguntasResultante,ListaRespuestaResultante,TDAUsuariosActualizados,[],Stack2).
