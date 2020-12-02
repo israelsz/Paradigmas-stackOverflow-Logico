@@ -74,6 +74,35 @@ closeQuestion(TDApregunta,PreguntaModificada):-
     questionGetVotes(TDApregunta,Votes),
     PreguntaModificada= [Pregunta,Id,User,Date,Labels,"cerrada",Votes].
 
+%Agrega un voto a un TDA pregunta
+questionAddPositiveVote(TDApregunta,PreguntaModificada):-
+    questionGetPregunta(TDApregunta,Pregunta),
+    questionGetId(TDApregunta,Id),
+    questionGetUser(TDApregunta,User),
+    questionGetDate(TDApregunta,Date),
+    questionGetLabels(TDApregunta,Labels),
+    questionGetStatus(TDApregunta,Status),
+    questionGetVotes(TDApregunta,Votes),
+    NuevosVotos is Votes+1,
+    PreguntaModificada = [Pregunta,Id,User,Date,Labels,Status,NuevosVotos].
+
+%Resta un voto a un TDA pregunta
+questionAddNegativeVote(TDApregunta,PreguntaModificada):-
+    questionGetPregunta(TDApregunta,Pregunta),
+    questionGetId(TDApregunta,Id),
+    questionGetUser(TDApregunta,User),
+    questionGetDate(TDApregunta,Date),
+    questionGetLabels(TDApregunta,Labels),
+    questionGetStatus(TDApregunta,Status),
+    questionGetVotes(TDApregunta,Votes),
+    NuevosVotos is Votes-1,
+    PreguntaModificada = [Pregunta,Id,User,Date,Labels,Status,NuevosVotos].
+
+%Pertenencia
+isQuestion(TDApregunta):-
+    length(TDApregunta, 7).
+    
+
 /*
 ████████╗██████╗  █████╗     ██████╗ ███████╗███████╗██████╗ ██╗   ██╗███████╗███████╗████████╗ █████╗ 
 ╚══██╔══╝██╔══██╗██╔══██╗    ██╔══██╗██╔════╝██╔════╝██╔══██╗██║   ██║██╔════╝██╔════╝╚══██╔══╝██╔══██╗
@@ -112,6 +141,7 @@ answerGetStatus([_,_,_,_,_,_,EstadoRespuesta,_], EstadoRespuesta).
 answerGetVotes([_,_,_,_,_,_,_,VotosTotales], VotosTotales).
 
 %Modificadores
+
 %Cambia el estado de una respuesta a aceptada
 aceptarRespuesta(TDArespuesta,RespuestaModificada):-
     answerGetRespuesta(TDArespuesta,Respuesta),
@@ -122,6 +152,37 @@ aceptarRespuesta(TDArespuesta,RespuestaModificada):-
     answerGetLabels(TDArespuesta,Labels),
     answerGetVotes(TDArespuesta,Votes),
     RespuestaModificada = [Respuesta,IdPregunta,IdRespuesta,Username,Date,Labels,"aceptada",Votes].
+
+%Agrega un voto positivo a un TDA Respuesta
+answerAddPositiveVote(TDArespuesta,RespuestaModificada):-
+    answerGetRespuesta(TDArespuesta,Respuesta),
+    answerGetIdPregunta(TDArespuesta,IdPregunta),
+    answerGetId(TDArespuesta,IdRespuesta),
+    answerGetUser(TDArespuesta,Username),
+    answerGetDate(TDArespuesta,Date),
+    answerGetLabels(TDArespuesta,Labels),
+    answerGetStatus(TDArespuesta,Status),
+    answerGetVotes(TDArespuesta,Votes),
+    NuevosVotos is Votes+1,
+    RespuestaModificada = [Respuesta,IdPregunta,IdRespuesta,Username,Date,Labels,Status,NuevosVotos].
+
+%Agrega un voto negativo a un TDA Respuesta
+answerAddNegativeVote(TDArespuesta,RespuestaModificada):-
+    answerGetRespuesta(TDArespuesta,Respuesta),
+    answerGetIdPregunta(TDArespuesta,IdPregunta),
+    answerGetId(TDArespuesta,IdRespuesta),
+    answerGetUser(TDArespuesta,Username),
+    answerGetDate(TDArespuesta,Date),
+    answerGetLabels(TDArespuesta,Labels),
+    answerGetStatus(TDArespuesta,Status),
+    answerGetVotes(TDArespuesta,Votes),
+    NuevosVotos is Votes-1,
+    RespuestaModificada = [Respuesta,IdPregunta,IdRespuesta,Username,Date,Labels,Status,NuevosVotos].
+    
+
+%Pertenencia
+isAnswer(TDArespuesta):-
+    length(TDArespuesta, 8).
 
 
 /*
@@ -180,6 +241,34 @@ userAdd15reputation(TDAusuario,ListaModificada):-
     userGetQuestions(TDAusuario,PreguntasUsuario),
     NuevaReputacion is Reputacion+15,
     ListaModificada = [Username,Password,PreguntasUsuario,NuevaReputacion].
+
+%Añade 10 de reputacion al usuario
+userAdd10reputation(TDAusuario,ListaModificada):-
+    userGetUsername(TDAusuario,Username),
+    userGetPassword(TDAusuario,Password),
+    userGetReputation(TDAusuario,Reputacion),
+    userGetQuestions(TDAusuario,PreguntasUsuario),
+    NuevaReputacion is Reputacion+10,
+    ListaModificada = [Username,Password,PreguntasUsuario,NuevaReputacion].
+
+%Quita 2 de reputacion al usuario
+userSubtract2reputation(TDAusuario,ListaModificada):-
+    userGetUsername(TDAusuario,Username),
+    userGetPassword(TDAusuario,Password),
+    userGetReputation(TDAusuario,Reputacion),
+    userGetQuestions(TDAusuario,PreguntasUsuario),
+    NuevaReputacion is Reputacion-2,
+    ListaModificada = [Username,Password,PreguntasUsuario,NuevaReputacion].
+
+%Quita 1 de reputacion al usuario
+userSubtract1reputation(TDAusuario,ListaModificada):-
+    userGetUsername(TDAusuario,Username),
+    userGetPassword(TDAusuario,Password),
+    userGetReputation(TDAusuario,Reputacion),
+    userGetQuestions(TDAusuario,PreguntasUsuario),
+    NuevaReputacion is Reputacion-1,
+    ListaModificada = [Username,Password,PreguntasUsuario,NuevaReputacion].
+
 
 /*
 ██████╗  █████╗ ███████╗███████╗    ██████╗ ███████╗    ██╗  ██╗███████╗ ██████╗██╗  ██╗ ██████╗ ███████╗
@@ -327,6 +416,13 @@ buscarUsuariodeRespuestaPorId([Cabeza|_],IdBuscado,Username):-
     (Usuario = Username).
 buscarUsuariodeRespuestaPorId([_|Cola],IdBuscado,Username) :- buscarUsuariodeRespuestaPorId(Cola,IdBuscado,Username).
 
+getQuestion(Stack,IdPregunta,Pregunta):-
+    stackGetQuestions(Stack,ListaPreguntas),
+    buscarPreguntaPorId(ListaPreguntas,IdPregunta,Pregunta).
+
+getAnswer(Stack,IdPregunta,IdRespuesta,Respuesta):-
+    stackGetAnswers(Stack,ListaRespuestas),
+    buscarListaRespuestaPorIds(ListaRespuestas,IdPregunta,IdRespuesta,Respuesta).
 
 /*
 ███████╗██╗   ██╗███╗   ██╗ ██████╗██╗ ██████╗ ███╗   ██╗███████╗███████╗    
@@ -436,7 +532,7 @@ accept(Stack,IdPregunta,IdRespuesta,Stack2):-
     nombreUsuarioActivo(ActiveUser,Autor),
     %Se verifica que la pregunta que sera aceptada sea una pregunta del usuario conectado
     buscarUsuariodePreguntaPorId(Preguntas,IdPregunta,UsuarioQueHizoLaPregunta),
-    (Autor = UsuarioQueHizoLaPregunta),
+    (Autor = UsuarioQueHizoLaPregunta),!,
     %Se consigue la lista de la pregunta
     buscarPreguntaPorId(Preguntas,IdPregunta,ListaPregunta),
     %Se cierra la pregunta
@@ -464,3 +560,122 @@ accept(Stack,IdPregunta,IdRespuesta,Stack2):-
     reemplazar(ListaUsuario2,ListaUsuariosActualizada,UserCon15ReputacionAgregada,TDAUsuariosActualizados),
     %Finalmente se crea el stack actualizado
     crearStack(ListaPreguntasResultante,ListaRespuestaResultante,TDAUsuariosActualizados,[],Stack2).
+
+%Vote Positivo para Preguntas
+vote(Stack,TDAPreguntaORespuesta,Voto,Stack2):-
+    %Se verificara si es una pregunta
+    isQuestion(TDAPreguntaORespuesta),
+    %Se verificara si es voto positivo
+    (Voto = true),
+    %Se debe sumar un voto positivo a la pregunta
+    questionAddPositiveVote(TDAPreguntaORespuesta,PreguntaConVotoActualizado),
+    %Se consigue la lista con preguntas del stack
+    stackGetQuestions(Stack,Preguntas),
+    %Se reemplaza el antiguo TDA pregunta por el nuevo TDA pregunta con el voto actualizado
+    reemplazar(TDAPreguntaORespuesta,Preguntas,PreguntaConVotoActualizado,NuevaListaPreguntas),
+    %Ahora se debe añadir +10 de reputacion al usuario que su pregunta fue votada a favor
+    %Se busca al usuario cuya pregunta fue votada a favor
+    questionGetUser(PreguntaConVotoActualizado,Username),
+    %Se consigue la lista de usuarios del stack
+    stackGetUsers(Stack,Usuarios),
+    %se consigue la lista del usuario que recibira la reputacion
+    buscarListaUsuario(Usuarios,Username,ListaUsuario),
+    %Se le añade 10 de reputacion a ese usuario
+    userAdd10reputation(ListaUsuario,TDAUsuarioConReputacionAgregada),
+    %Se reemplaza el antiguo Tda usuario, por el que ahora tiene la reputacion agregada
+    reemplazar(ListaUsuario,Usuarios,TDAUsuarioConReputacionAgregada,NuevaListaUsuarios),
+    %Se arma el nuevo stack actualizado
+    stackGetAnswers(Stack,Respuestas),
+    crearStack(NuevaListaPreguntas,Respuestas,NuevaListaUsuarios,[],Stack2).
+
+
+%Vote Negativo para Preguntas
+vote(Stack,TDAPreguntaORespuesta,Voto,Stack2):-
+    %Se verificara si es una pregunta
+    isQuestion(TDAPreguntaORespuesta),
+    %Se verificara si es voto negativo
+    (Voto = false),
+    %Se debe restar un voto a la pregunta
+    questionAddNegativeVote(TDAPreguntaORespuesta,PreguntaConVotoActualizado),
+    %Se consigue la lista con preguntas del stack
+    stackGetQuestions(Stack,Preguntas),
+    %Se reemplaza el antiguo TDA pregunta por el nuevo TDA pregunta con el voto actualizado
+    reemplazar(TDAPreguntaORespuesta,Preguntas,PreguntaConVotoActualizado,NuevaListaPreguntas),
+    %Ahora se debe restar -2 de reputacion al usuario que su pregunta fue votada en contra
+    %Se busca al usuario cuya pregunta fue votada en contra
+    questionGetUser(PreguntaConVotoActualizado,Username),
+    %Se consigue la lista de usuarios del stack
+    stackGetUsers(Stack,Usuarios),
+    %Se consigue la lista del usuario que recibira la reputacion
+    buscarListaUsuario(Usuarios,Username,ListaUsuario),
+    %Se le resta 2 de reputacion a ese usuario
+    userSubtract2reputation(ListaUsuario,TDAUsuarioConReputacionQuitada),
+    %Se reemplaza el antiguo Tda usuario, por el que ahora tiene la reputacion agregada
+    reemplazar(ListaUsuario,Usuarios,TDAUsuarioConReputacionQuitada,NuevaListaUsuarios),
+    %Se arma el nuevo stack actualizado
+    stackGetAnswers(Stack,Respuestas),
+    crearStack(NuevaListaPreguntas,Respuestas,NuevaListaUsuarios,[],Stack2).
+
+%Vote Positivo para Respuestas
+vote(Stack,TDAPreguntaORespuesta,Voto,Stack2):-
+    %Se verificara si es una respuesta
+    isAnswer(TDAPreguntaORespuesta),
+    %Se verificara si es voto positivo
+    (Voto = true),
+    %Se debe añadir un voto a la respuesta
+    answerAddPositiveVote(TDAPreguntaORespuesta,RespuestaConVotoActualizado),
+    %Se consigue la lista con respuestas del stack
+    stackGetAnswers(Stack,Respuestas),
+    %Se reemplaza el antiguo TDA respuesta por el nuevo TDA respuesta con el voto actualizado
+    reemplazar(TDAPreguntaORespuesta,Respuestas,RespuestaConVotoActualizado,NuevaListaRespuestas),
+    %Ahora se debe sumar +10 de reputacion al usuario cuya respuesta fue votada a favor
+    %Se busca al usuatio cuya pregunta fue votada a favcor
+    answerGetUser(RespuestaConVotoActualizado,Username),
+    %Se consigue la lista de usuarios del stack
+    stackGetUsers(Stack,Usuarios),
+    %Se consigue la lista del usuario que recibira la reputacion
+    buscarListaUsuario(Usuarios,Username,ListaUsuario),
+    %Se le suma 10 de reputacion a ese usuario
+    userAdd10reputation(ListaUsuario,TDAUsuarioConReputacionAgregada),
+    %Se reemplaza el antiguo TDA usuario, por el que ahora tiene la reputacion agregada
+    reemplazar(ListaUsuario,Usuarios,TDAUsuarioConReputacionAgregada,NuevaListaUsuarios),
+    %Se crea el nuevo stack actualizado
+    stackGetQuestions(Stack,Preguntas),
+    crearStack(Preguntas,NuevaListaRespuestas,NuevaListaUsuarios,[],Stack2).
+
+%Vote Negativo para Respuestas
+vote(Stack,TDAPreguntaORespuesta,Voto,Stack2):-
+    %Se verificara si es una respuesta
+    isAnswer(TDAPreguntaORespuesta),
+    %Se verificara si es voto negativo
+    (Voto = false),
+    %Se debe restar un voto a la respuesta
+    answerAddNegativeVote(TDAPreguntaORespuesta,RespuestaConVotoActualizado),
+    %Se consigue la lista con respuestas del stack
+    stackGetAnswers(Stack,Respuestas),
+    %Se reemplaza el antiguo TDA respuesta por el nuevo TDA respuesta con el voto actualizado
+    reemplazar(TDAPreguntaORespuesta,Respuestas,RespuestaConVotoActualizado,NuevaListaRespuestas),
+    %Ahora se debe restar -2 de reputacion al usuario cuya respuesta fue votada en contra
+    %Se busca al usuatio cuya pregunta fue votada en contra
+    answerGetUser(RespuestaConVotoActualizado,Username),
+    %Se consigue la lista de usuarios del stack
+    stackGetUsers(Stack,Usuarios),
+    %Se consigue la lista del usuario que perdera la reputacion
+    buscarListaUsuario(Usuarios,Username,ListaUsuario),
+    %Se le resta 2 de reputacion a ese usuario
+    userSubtract2reputation(ListaUsuario,TDAUsuarioConReputacionRestada),
+    %Se reemplaza el antiguo TDA usuario, por el que ahora tiene la reputacion restada
+    reemplazar(ListaUsuario,Usuarios,TDAUsuarioConReputacionRestada,NuevaListaUsuarios),
+    %Tambien se debe quitar 1 de reputacion al usuario que ejecuto el voto en contra de una respuesta
+    %Se consigue el nombre del usuario activo
+    stackGetActiveUser(Stack,ActiveUser),
+    nombreUsuarioActivo(ActiveUser,UsernameActivo),
+    %Se consigue el TDA Usuario del usuario activo
+    buscarListaUsuario(NuevaListaUsuarios,UsernameActivo,ListaUsuarioActivo),
+    %Se le resta 1 de reputacion al usuario por haber votado en contra de la respuesta
+    userSubtract1reputation(ListaUsuarioActivo,TDAUsuarioActivoConReputacionRestada),
+    %Se reemplaza el antiguo TDA usuario, por el que tiene reputacion restada
+    reemplazar(ListaUsuarioActivo,NuevaListaUsuarios,TDAUsuarioActivoConReputacionRestada,ListaUsuariosActualizada),
+    %Finalmente se crea el nuevo stack actualizado
+    stackGetQuestions(Stack,Preguntas),
+    crearStack(Preguntas,NuevaListaRespuestas,ListaUsuariosActualizada,[],Stack2).
