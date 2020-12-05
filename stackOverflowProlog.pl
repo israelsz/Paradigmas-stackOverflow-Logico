@@ -393,13 +393,6 @@ buscarUsuariodePreguntaPorId([Cabeza|_],IdBuscado,Username):-
     (IdBuscado = IdPregunta),
     (Usuario = Username).
 buscarUsuariodePreguntaPorId([_|Cola],IdBuscado,Username) :- buscarUsuariodePreguntaPorId(Cola,IdBuscado,Username).
-/*
-buscarListaUsuario([Cabeza|_],User,Lista):-
-    userGetUsername(Cabeza,Username),
-    (User = Username),
-    (Cabeza = Lista).
-buscarListaUsuario([_|Cola], User,Preguntas) :- buscarListaUsuario(Cola,User,Preguntas).
-*/
 
 buscarListaRespuestaPorIds([Cabeza|_],IdPreguntaBuscada,IdRespuestaBuscada,ListaRespuesta):-
     answerGetIdPregunta(Cabeza,IdPregunta),
@@ -423,6 +416,155 @@ getQuestion(Stack,IdPregunta,Pregunta):-
 getAnswer(Stack,IdPregunta,IdRespuesta,Respuesta):-
     stackGetAnswers(Stack,ListaRespuestas),
     buscarListaRespuestaPorIds(ListaRespuestas,IdPregunta,IdRespuesta,Respuesta).
+
+
+%Filtra y consigue todas las respuestas a cierto id de pregunta
+getAllAnswersToAQuestion(ListaRespuestas,IdPregunta,ListaConRespuestas) :-
+    findall(M, ( member(M, ListaRespuestas), call(answerGetIdPregunta(M,IdPregunta))), ListaConRespuestas).
+
+
+%Convierte toda la parte de stack de respuestas a string
+convertirRespuestasDeUnaPreguntaAString([],"").
+convertirRespuestasDeUnaPreguntaAString([Cabeza|Cola],StringRespuestasResultante):-
+    answerGetRespuesta(Cabeza,Respuesta),
+    answerGetIdPregunta(Cabeza,IdPreguntaQueResponde),
+    answerGetId(Cabeza,IdRespuesta),
+    answerGetUser(Cabeza,Username),
+    answerGetDate(Cabeza,Fecha),
+    answerGetLabels(Cabeza,Etiquetas),
+    answerGetStatus(Cabeza,Status),
+    answerGetVotes(Cabeza,Votes),
+    atom_string(Respuesta,StringRespuesta),
+    atom_string(IdPreguntaQueResponde,StringIdPreguntaQueResponde),
+    atom_string(IdRespuesta,StringIdRespuesta),
+    atom_string(Username,StringUsername),
+    atom_string(Fecha,StringFecha),
+    atomic_list_concat(Etiquetas,", ",AtomoEtiquetas),
+    atom_string(AtomoEtiquetas,StringEtiquetas),
+    atom_string(Status,StringStatus),
+    atom_string(Votes,StringVotes),
+    string_concat("        Respuesta:   Id: ",StringIdRespuesta,S1),
+    string_concat(S1,"   Id al que responde: ",S2),
+    string_concat(S2, StringIdPreguntaQueResponde,S3),
+    string_concat(S3,"    Fecha de respuesta: ",S4),
+    string_concat(S4, StringFecha,S5),
+    string_concat(S5,"   Votos: ",S6),
+    string_concat(S6, StringVotes,S7),
+    string_concat(S7,"   Estado: ",S8),
+    string_concat(S8,StringStatus,S9),
+    string_concat(S9,"\n",S10),
+    string_concat(S10,"            ",S11),
+    string_concat(S11,StringRespuesta,S12),
+    string_concat(S12,"\n",S13),
+    string_concat(S13,"            Etiquetas: ",S14),
+    string_concat(S14, StringEtiquetas,S15),
+    string_concat(S15,"    Autor: ",S16),
+    string_concat(S16, StringUsername,S17),
+    string_concat(S17," \n \n",S18),
+    convertirRespuestasDeUnaPreguntaAString(Cola,StringRespuestaCola),
+    string_concat(S18,StringRespuestaCola,StringRespuestasResultante).
+
+%Convierte todas las preguntas con sus respectivas respuestas a a string
+convertirPreguntasRespuestasAString([],_,"").
+convertirPreguntasRespuestasAString([Cabeza|Cola],Respuestas,StringResultante):-
+    questionGetPregunta(Cabeza,Pregunta),
+    questionGetId(Cabeza,IdPregunta),
+    questionGetUser(Cabeza,Username),
+    questionGetDate(Cabeza,Date),
+    questionGetLabels(Cabeza,Etiquetas),
+    questionGetStatus(Cabeza,Status),
+    questionGetVotes(Cabeza,Votes),
+    atom_string(Pregunta,StringPregunta),
+    atom_string(IdPregunta,StringIdPregunta),
+    atom_string(Username,StringUsername),
+    atom_string(Date,StringDate),
+    atomic_list_concat(Etiquetas,", ",AtomoEtiquetas),
+    atom_string(AtomoEtiquetas,StringEtiquetas),
+    atom_string(Status,StringStatus),
+    atom_string(Votes,StringVotes),
+    string_concat("\n Pregunta:   Id: ",StringIdPregunta,S1),
+    string_concat(S1,"   Fecha Publicacion: ",S2),
+    string_concat(S2,StringDate,S3),
+    string_concat(S3,"   Votos: ",S4),
+    string_concat(S4,StringVotes,S5),
+    string_concat(S5,"   Estado: ",S6),
+    string_concat(S6,StringStatus,S7),
+    string_concat(S7," \n",S8),
+    string_concat(S8,"   ",S9),
+    string_concat(S9,StringPregunta,S10),
+    string_concat(S10," \n",S11),
+    string_concat(S11,"   Etiquetas: ",S12),
+    string_concat(S12,StringEtiquetas,S13),
+    string_concat(S13,"   Autor: ",S14),
+    string_concat(S14,StringUsername,S15),
+    string_concat(S15," \n",S16),
+    getAllAnswersToAQuestion(Respuestas,IdPregunta,ListaConRespuestasALaPregunta),
+    convertirRespuestasDeUnaPreguntaAString(ListaConRespuestasALaPregunta,StringRespuestas),
+    string_concat(S16,StringRespuestas,S17),
+    convertirPreguntasRespuestasAString(Cola,Respuestas,StringPreguntaCola),
+    string_concat(S17,StringPreguntaCola,StringResultante).
+
+%Convierte toda la info de los usuarios a String
+convertirUsuariosAString([],"").
+convertirUsuariosAString([Cabeza|Cola],StringUsuariosResultante):-
+    userGetUsername(Cabeza,Username),
+    userGetReputation(Cabeza,Reputacion),
+    userGetQuestions(Cabeza,PreguntasUsuario),
+    atom_string(Username,StringUsername),
+    atom_string(Reputacion,StringReputacion),
+    atomic_list_concat(PreguntasUsuario,", ",AtomoPreguntas),
+    atom_string(AtomoPreguntas,StringPreguntasUsuario),
+    string_concat("Usuario:\n   Username: ",StringUsername,S1),
+    string_concat(S1,"   Reputacion: ",S2),
+    string_concat(S2,StringReputacion,S3),
+    string_concat(S3,"   Preguntas Realizadas(Id's): ",S4),
+    string_concat(S4,StringPreguntasUsuario,S5),
+    string_concat(S5,"\n",S6),
+    convertirUsuariosAString(Cola,StringSiguientesUsuarios),
+    string_concat(S6,StringSiguientesUsuarios,StringUsuariosResultante).
+
+%Convertir preguntas y respuestas a string usando una lista de id's de pregunta
+convertirPreguntasRespuestasAStringPorId([],_,_,"").
+convertirPreguntasRespuestasAStringPorId([Cabeza|Cola],Preguntas,Respuestas,StringResultante):-
+    %Se debe buscar la pregunta a la que corresponde el id, entonces:
+    %Se consigue la pregunta
+    buscarPreguntaPorId(Preguntas,Cabeza,ListaPregunta),
+    questionGetPregunta(ListaPregunta,Pregunta),
+    questionGetId(ListaPregunta,IdPregunta),
+    questionGetUser(ListaPregunta,Username),
+    questionGetDate(ListaPregunta,Date),
+    questionGetLabels(ListaPregunta,Etiquetas),
+    questionGetStatus(ListaPregunta,Status),
+    questionGetVotes(ListaPregunta,Votes),
+    atom_string(Pregunta,StringPregunta),
+    atom_string(IdPregunta,StringIdPregunta),
+    atom_string(Username,StringUsername),
+    atom_string(Date,StringDate),
+    atomic_list_concat(Etiquetas,", ",AtomoEtiquetas),
+    atom_string(AtomoEtiquetas,StringEtiquetas),
+    atom_string(Status,StringStatus),
+    atom_string(Votes,StringVotes),
+    string_concat("\n Pregunta:   Id: ",StringIdPregunta,S1),
+    string_concat(S1,"   Fecha Publicacion: ",S2),
+    string_concat(S2,StringDate,S3),
+    string_concat(S3,"   Votos: ",S4),
+    string_concat(S4,StringVotes,S5),
+    string_concat(S5,"   Estado: ",S6),
+    string_concat(S6,StringStatus,S7),
+    string_concat(S7," \n",S8),
+    string_concat(S8,"   ",S9),
+    string_concat(S9,StringPregunta,S10),
+    string_concat(S10," \n",S11),
+    string_concat(S11,"   Etiquetas: ",S12),
+    string_concat(S12,StringEtiquetas,S13),
+    string_concat(S13,"   Autor: ",S14),
+    string_concat(S14,StringUsername,S15),
+    string_concat(S15," \n",S16),
+    getAllAnswersToAQuestion(Respuestas,IdPregunta,ListaConRespuestasALaPregunta),
+    convertirRespuestasDeUnaPreguntaAString(ListaConRespuestasALaPregunta,StringRespuestas),
+    string_concat(S16,StringRespuestas,S17),
+    convertirPreguntasRespuestasAStringPorId(Cola,Preguntas,Respuestas,StringPreguntaCola),
+    string_concat(S17,StringPreguntaCola,StringResultante).
 
 /*
 ███████╗██╗   ██╗███╗   ██╗ ██████╗██╗ ██████╗ ███╗   ██╗███████╗███████╗    
@@ -537,10 +679,8 @@ accept(Stack,IdPregunta,IdRespuesta,Stack2):-
     buscarPreguntaPorId(Preguntas,IdPregunta,ListaPregunta),
     %Se cierra la pregunta
     closeQuestion(ListaPregunta,PreguntaCerrada),
-    print(PreguntaCerrada),
     %Se actualiza el stack de preguntas con la pregunta cerrada
     reemplazar(ListaPregunta,Preguntas,PreguntaCerrada,ListaPreguntasResultante),
-    print(ListaPreguntasResultante),
     %Se conseguira la lista de respuesta que fue aceptada
     buscarListaRespuestaPorIds(Respuestas,IdPregunta,IdRespuesta,ListaRespuestaEncontrada),
     %Se marcara como aceptada la respuesta
@@ -679,3 +819,55 @@ vote(Stack,TDAPreguntaORespuesta,Voto,Stack2):-
     %Finalmente se crea el nuevo stack actualizado
     stackGetQuestions(Stack,Preguntas),
     crearStack(Preguntas,NuevaListaRespuestas,ListaUsuariosActualizada,[],Stack2).
+
+%Caso en el cual se convierte a string todo el string al no haber un usuario conectado
+stackToString(Stack,StackStr):-
+    stackGetActiveUser(Stack, ActiveUser),
+    %Se verifica si hay un usuario conectado
+    length(ActiveUser,CantidadUsuariosConectados),
+    CantidadUsuariosConectados = 0,
+    %Se consiguen los datos del stack
+    stackGetQuestions(Stack,Preguntas),
+    stackGetAnswers(Stack,Respuestas),
+    stackGetUsers(Stack,Usuarios),
+    %Primero convertir a string y mostrar toda la info de pregunta y respuestas
+    convertirPreguntasRespuestasAString(Preguntas,Respuestas,StringPreguntasRespuestas),
+    string_concat(StringPreguntasRespuestas,"\n",S1),
+    string_concat(S1,"Informacion de usuarios registrados en el foro: \n", S2),
+    %Se concatenan los strings Preguntas/Respuestas y de usuarios
+    convertirUsuariosAString(Usuarios,StringUsuariosResultante),
+    string_concat(S2,StringUsuariosResultante,StackStr).
+
+%Caso en el cual se convierte a string solo la informacion de un usuario
+stackToString(Stack,StackStr):-
+   stackGetActiveUser(Stack,ActiveUser),
+   %Se verifica que exista un usuario conectado
+   length(ActiveUser,CantidadUsuariosConectados),
+   not(CantidadUsuariosConectados = 0),!,
+   %Se consigue el username del usuario conectado
+   nombreUsuarioActivo(ActiveUser,UsernameActivo),
+   %Se consigue la lista de Usuarios registrados
+   stackGetUsers(Stack,Usuarios),
+   stackGetAnswers(Stack,Respuestas),
+   stackGetQuestions(Stack,Preguntas),
+   %Se buscara la lista de preguntas que ese usuario ha realizado
+   buscarPreguntasUsuario(Usuarios,UsernameActivo,IdPreguntasHechasPorElUsuario),
+   %Se convertiran sus preguntas con sus respectivas respuestas a string
+   convertirPreguntasRespuestasAStringPorId(IdPreguntasHechasPorElUsuario,Preguntas,Respuestas,StringPreguntasRespuestasUsuario),
+   %A continuacion se conseguirá su informacion de usuario:
+   buscarListaUsuario(Usuarios,UsernameActivo,ListaUsernameActivo),
+   string_concat("A continuacion se mostrara la informacion del usuario conectado:\nPreguntas hechas por el usuario:\n ",StringPreguntasRespuestasUsuario,S1),
+   string_concat(S1,"\nLa informacion del perfil del usuario es la siguiente:\n",S2),
+    userGetReputation(ListaUsernameActivo,Reputacion),
+    userGetQuestions(ListaUsernameActivo,PreguntasUsuario),
+    atom_string(UsernameActivo,StringUsername),
+    atom_string(Reputacion,StringReputacion),
+    atomic_list_concat(PreguntasUsuario,", ",AtomoPreguntas),
+    atom_string(AtomoPreguntas,StringPreguntasUsuario),
+    string_concat(S2,"Usuario:\n   Username: ",S3),
+    string_concat(S3,StringUsername,S4),
+    string_concat(S4,"   Reputacion: ",S5),
+    string_concat(S5,StringReputacion,S6),
+    string_concat(S6,"   Preguntas Realizadas(Id's): ",S7),
+    string_concat(S7,StringPreguntasUsuario,S8),
+    string_concat(S8,"\n",StackStr).
