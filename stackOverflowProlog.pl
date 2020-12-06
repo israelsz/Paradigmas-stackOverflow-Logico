@@ -349,7 +349,7 @@ stack2([[["Buenas, ¿como se puede hacer un comentario en Prolog ?", 1, "matias"
 ╚██████╗╚██████╔╝██║ ╚═╝ ██║██║     ███████╗███████╗██║ ╚═╝ ██║███████╗██║ ╚████║   ██║   ██║  ██║██║  ██║██║╚██████╔╝███████║
  ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚══════╝╚══════╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝ ╚═════╝ ╚══════╝
 */                                                                                                                        
-
+% Dominio: list X number/string/list
 %predicado que permite encontrar si hay un elemento en una sublista del stack
 buscarElemento([[E|_]|_],E).
 buscarElemento([[_|Cola1]|Cola2],E) :-
@@ -357,12 +357,14 @@ buscarElemento([[_|Cola1]|Cola2],E) :-
 buscarElemento([[]|Cola2],E) :-
     buscarElemento(Cola2,E).
 
+% Dominio: list X string
 %Predicado que verifica si el usuario se encuentra registrado o no.
 existeUser([Cabeza|_],User):-
     userGetUsername(Cabeza,Username),
     (User = Username).
 existeUser([_|Cola], User) :- existeUser(Cola, User).
 
+% Dominio: list X string X string
 %Predicado que verifica si el usuario y su contraseña coinciden.
 existeUserPassword([Cabeza|_],User,Pass):-
     userGetUsername(Cabeza,Username),
@@ -371,9 +373,11 @@ existeUserPassword([Cabeza|_],User,Pass):-
     (Pass = Password).
 existeUserPassword([_|Cola], User, Pass) :- existeUserPassword(Cola, User, Pass).
 
+% Dominio: list X string
 %Predicado que permite ver quien es el usuario conectado
 nombreUsuarioActivo([Nombre],Nombre).
 
+% Dominio: list X string X string
 %Retorna las preguntas de un usuario
 buscarPreguntasUsuario([Cabeza|_],User,Preguntas):-
     userGetUsername(Cabeza,Username),
@@ -382,6 +386,7 @@ buscarPreguntasUsuario([Cabeza|_],User,Preguntas):-
     (Preguntas = SalidaPreguntas).
 buscarPreguntasUsuario([_|Cola], User,Preguntas) :- buscarPreguntasUsuario(Cola, User,Preguntas).
 
+% Dominio: list X string X list
 %Retorna la lista con toda la informacion de un usuario
 buscarListaUsuario([Cabeza|_],User,Lista):-
     userGetUsername(Cabeza,Username),
@@ -389,24 +394,28 @@ buscarListaUsuario([Cabeza|_],User,Lista):-
     (Cabeza = Lista).
 buscarListaUsuario([_|Cola], User,Preguntas) :- buscarListaUsuario(Cola,User,Preguntas).
 
+% Dominio: number/string/list X list X number/string/list X list
 %Reemplaza un valor de una lista por otro asignado.
 reemplazar(_, [], _, []).
 reemplazar(ElementoBuscado, [ElementoBuscado|Cola], ReemplazarPor, [ReemplazarPor|Cola]):- !.
 reemplazar(ElementoBuscado, [CElemento|Cola], ReemplazarPor, [CElemento|ColaR]):-
   reemplazar(ElementoBuscado, Cola, ReemplazarPor, ColaR).
 
+% Dominio: list X number
 %Busca la existencia de un id en la lista de preguntas
 existePregunta([Cabeza|_],IdBuscado):-
     questionGetId(Cabeza,IdPregunta),
     (IdBuscado = IdPregunta).
 existePregunta([_|Cola], IdBuscado) :- existePregunta(Cola, IdBuscado).
 
+% Dominio: list X number
 %Busca la existencia de un id en la lista de respuestas
 existeRespuesta([Cabeza|_],IdBuscado):-
     answerGetId(Cabeza,IdRespuesta),
     (IdBuscado = IdRespuesta).
 existeRespuesta([_|Cola], IdBuscado) :- existeRespuesta(Cola, IdBuscado).
 
+% Dominio: list X number x list
 %Busca la lista de una pregunta por su id
 buscarPreguntaPorId([Cabeza|_],IdBuscado,ListaPregunta):-
     questionGetId(Cabeza,IdPregunta),
@@ -414,6 +423,7 @@ buscarPreguntaPorId([Cabeza|_],IdBuscado,ListaPregunta):-
     (Cabeza = ListaPregunta).
 buscarPreguntaPorId([_|Cola],IdBuscado,ListaPregunta) :- buscarPreguntaPorId(Cola,IdBuscado,ListaPregunta).
 
+% Dominio: list X number X string
 %busca el nombre del usuario que hizo la pregunta por id
 buscarUsuariodePreguntaPorId([Cabeza|_],IdBuscado,Username):-
     questionGetId(Cabeza,IdPregunta),
@@ -422,6 +432,7 @@ buscarUsuariodePreguntaPorId([Cabeza|_],IdBuscado,Username):-
     (Usuario = Username).
 buscarUsuariodePreguntaPorId([_|Cola],IdBuscado,Username) :- buscarUsuariodePreguntaPorId(Cola,IdBuscado,Username).
 
+% Dominio: list X number X number X list
 %busca el Tda respuesta en la lista de Respuestas por su id
 buscarListaRespuestaPorIds([Cabeza|_],IdPreguntaBuscada,IdRespuestaBuscada,ListaRespuesta):-
     answerGetIdPregunta(Cabeza,IdPregunta),
@@ -431,6 +442,7 @@ buscarListaRespuestaPorIds([Cabeza|_],IdPreguntaBuscada,IdRespuestaBuscada,Lista
     (Cabeza = ListaRespuesta).
 buscarListaRespuestaPorIds([_|Cola],IdPreguntaBuscada,IdRespuestaBuscada,ListaRespuesta) :- buscarListaRespuestaPorIds(Cola,IdPreguntaBuscada,IdRespuestaBuscada,ListaRespuesta).
 
+% Dominio: list X number X string
 %Dada un id de respuesta, retorna el nombre del autor de la respuesta
 buscarUsuariodeRespuestaPorId([Cabeza|_],IdBuscado,Username):-
     answerGetUser(Cabeza,Usuario),
@@ -439,22 +451,25 @@ buscarUsuariodeRespuestaPorId([Cabeza|_],IdBuscado,Username):-
     (Usuario = Username).
 buscarUsuariodeRespuestaPorId([_|Cola],IdBuscado,Username) :- buscarUsuariodeRespuestaPorId(Cola,IdBuscado,Username).
 
+% Dominio: stack X number X list
 %Predicado complementario usada para el predicado vote
 getQuestion(Stack,IdPregunta,Pregunta):-
     stackGetQuestions(Stack,ListaPreguntas),
     buscarPreguntaPorId(ListaPreguntas,IdPregunta,Pregunta).
 
+% Dominio: stack X number X number X list
 %Predicado complementario usada para el predicado vote
 getAnswer(Stack,IdPregunta,IdRespuesta,Respuesta):-
     stackGetAnswers(Stack,ListaRespuestas),
     buscarListaRespuestaPorIds(ListaRespuestas,IdPregunta,IdRespuesta,Respuesta).
 
-
+% Dominio: list X number X list
 %Filtra y consigue todas las respuestas a cierto id de pregunta
 getAllAnswersToAQuestion(ListaRespuestas,IdPregunta,ListaConRespuestas) :-
     findall(M, ( member(M, ListaRespuestas), call(answerGetIdPregunta(M,IdPregunta))), ListaConRespuestas).
 
 
+% Dominio: list X string
 %Convierte toda la parte de stack de respuestas a string
 convertirRespuestasDeUnaPreguntaAString([],"").
 convertirRespuestasDeUnaPreguntaAString([Cabeza|Cola],StringRespuestasResultante):-
@@ -496,6 +511,7 @@ convertirRespuestasDeUnaPreguntaAString([Cabeza|Cola],StringRespuestasResultante
     convertirRespuestasDeUnaPreguntaAString(Cola,StringRespuestaCola),
     string_concat(S18,StringRespuestaCola,StringRespuestasResultante).
 
+% Dominio: list X list X string
 %Convierte todas las preguntas con sus respectivas respuestas a a string
 convertirPreguntasRespuestasAString([],_,"").
 convertirPreguntasRespuestasAString([Cabeza|Cola],Respuestas,StringResultante):-
@@ -536,6 +552,7 @@ convertirPreguntasRespuestasAString([Cabeza|Cola],Respuestas,StringResultante):-
     convertirPreguntasRespuestasAString(Cola,Respuestas,StringPreguntaCola),
     string_concat(S17,StringPreguntaCola,StringResultante).
 
+% Dominio: list X string
 %Convierte toda la info de los usuarios a String
 convertirUsuariosAString([],"").
 convertirUsuariosAString([Cabeza|Cola],StringUsuariosResultante):-
@@ -555,6 +572,7 @@ convertirUsuariosAString([Cabeza|Cola],StringUsuariosResultante):-
     convertirUsuariosAString(Cola,StringSiguientesUsuarios),
     string_concat(S6,StringSiguientesUsuarios,StringUsuariosResultante).
 
+% Dominio: list X list X list X string
 %Convertir preguntas y respuestas a string usando una lista de id's de pregunta
 convertirPreguntasRespuestasAStringPorId([],_,_,"").
 convertirPreguntasRespuestasAStringPorId([Cabeza|Cola],Preguntas,Respuestas,StringResultante):-
@@ -615,6 +633,7 @@ convertirPreguntasRespuestasAStringPorId([Cabeza|Cola],Preguntas,Respuestas,Stri
                                                                                 
 */                                                                             
 
+% Dominio: stack X string X string x stack
 stackRegister(Stack,Username,Password,Stack2):-
     string(Username),
     string(Password),
@@ -627,6 +646,7 @@ stackRegister(Stack,Username,Password,Stack2):-
     stackGetActiveUser(Stack, ActiveUser),
     crearStack(Preguntas,Respuestas,ListaResultante,ActiveUser,Stack2).
 
+% Dominio: stack X string X string X stack
 stackLogin(Stack,Username,Password,Stack2):-
     string(Username),
     string(Password),
@@ -638,6 +658,7 @@ stackLogin(Stack,Username,Password,Stack2):-
     append(ActiveUser,[Username],ListaResultante),
     crearStack(Preguntas,Respuestas,Usuarios,ListaResultante,Stack2).
 
+% Dominio: stack X date X string X string list x stack
 ask(Stack,Fecha,TextoPregunta,ListaEtiquetas,Stack2):-
     string(Fecha),
     string(TextoPregunta),
@@ -665,7 +686,7 @@ ask(Stack,Fecha,TextoPregunta,ListaEtiquetas,Stack2):-
     %Finalmente se crea el stack
     crearStack(ListaPreguntasResultante,Respuestas,ListaUsuariosResultante,[],Stack2).
 
-
+% Dominio: stack X date X number X string X string list X stack
 answer(Stack,Fecha,IdPreguntaQueResponde,TextoRespuesta,ListaEtiquetas,Stack2):-
     string(Fecha),
     string(TextoRespuesta),
@@ -689,6 +710,7 @@ answer(Stack,Fecha,IdPreguntaQueResponde,TextoRespuesta,ListaEtiquetas,Stack2):-
     append(Respuestas,[SalidaRespuesta],ListaRespuestasResultante),
     crearStack(Preguntas,ListaRespuestasResultante,Usuarios,[],Stack2).
 
+% Dominio: stack X number X number X stack
 accept(Stack,IdPregunta,IdRespuesta,Stack2):-
     integer(IdPregunta),
     integer(IdRespuesta),
@@ -734,6 +756,7 @@ accept(Stack,IdPregunta,IdRespuesta,Stack2):-
     %Finalmente se crea el stack actualizado
     crearStack(ListaPreguntasResultante,ListaRespuestaResultante,TDAUsuariosActualizados,[],Stack2).
 
+% Dominio: stack X string
 %Caso en el cual se convierte a string todo el string al no haber un usuario conectado
 stackToString(Stack,StackStr):-
     stackGetActiveUser(Stack, ActiveUser),
@@ -752,6 +775,7 @@ stackToString(Stack,StackStr):-
     convertirUsuariosAString(Usuarios,StringUsuariosResultante),
     string_concat(S2,StringUsuariosResultante,StackStr).
 
+%Dominio: stack X string
 %Caso en el cual se convierte a string solo la informacion de un usuario
 stackToString(Stack,StackStr):-
     stackGetActiveUser(Stack,ActiveUser),
@@ -787,6 +811,7 @@ stackToString(Stack,StackStr):-
     string_concat(S8,"\n",StackStr).
 
 
+% Dominio: stack X Pregunta o Respuesta X boolean X stack
 %Vote Positivo para Preguntas
 vote(Stack,TDAPreguntaORespuesta,Voto,Stack2):-
     stackGetActiveUser(Stack,ActiveUser),
@@ -818,7 +843,7 @@ vote(Stack,TDAPreguntaORespuesta,Voto,Stack2):-
     stackGetAnswers(Stack,Respuestas),
     crearStack(NuevaListaPreguntas,Respuestas,NuevaListaUsuarios,[],Stack2).
 
-
+%Dominio: stack X Pregunta o Respuesta X boolean X stack
 %Vote Negativo para Preguntas
 vote(Stack,TDAPreguntaORespuesta,Voto,Stack2):-
     stackGetActiveUser(Stack,ActiveUser),
@@ -850,6 +875,7 @@ vote(Stack,TDAPreguntaORespuesta,Voto,Stack2):-
     stackGetAnswers(Stack,Respuestas),
     crearStack(NuevaListaPreguntas,Respuestas,NuevaListaUsuarios,[],Stack2).
 
+% Dominio: stack X Pregunta o Respuesta X boolean X stack
 %Vote Positivo para Respuestas
 vote(Stack,TDAPreguntaORespuesta,Voto,Stack2):-
     stackGetActiveUser(Stack,ActiveUser),
@@ -881,6 +907,7 @@ vote(Stack,TDAPreguntaORespuesta,Voto,Stack2):-
     stackGetQuestions(Stack,Preguntas),
     crearStack(Preguntas,NuevaListaRespuestas,NuevaListaUsuarios,[],Stack2).
 
+% Dominio: stack X Pregunta o Respuesta X boolean X stack
 %Vote Negativo para Respuestas
 vote(Stack,TDAPreguntaORespuesta,Voto,Stack2):-
     stackGetActiveUser(Stack,ActiveUser),
